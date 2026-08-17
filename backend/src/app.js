@@ -2,6 +2,11 @@ const express = require("express");
 const cors = require("cors");
 
 const authRoutes = require("./routes/authRoutes");
+const academicYearRoutes = require("./routes/academicYearRoutes");
+const gradeRoutes = require("./routes/gradeRoutes");
+const classRoutes = require("./routes/classRoutes");
+const learnerRoutes = require("./routes/learnerRoutes");
+const parentRoutes = require("./routes/parentRoutes");
 
 const app = express();
 
@@ -11,22 +16,30 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin:
+      process.env.CLIENT_URL ||
+      "http://localhost:5173",
+
     credentials: true
   })
 );
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+);
 
 // ==========================================
-// ROUTES
+// BASIC ROUTES
 // ==========================================
 
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: "School Fee Management System API is running",
+    message:
+      "School Fee Management System API is running",
     version: "1.0.0"
   });
 });
@@ -35,21 +48,54 @@ app.get("/api/health", (req, res) => {
   res.json({
     success: true,
     message: "API is healthy",
-    timestamp: new Date().toISOString()
+    timestamp:
+      new Date().toISOString()
   });
 });
 
-// Authentication routes
-app.use("/api/auth", authRoutes);
+// ==========================================
+// API ROUTES
+// ==========================================
+
+app.use(
+  "/api/auth",
+  authRoutes
+);
+
+app.use(
+  "/api/academic-years",
+  academicYearRoutes
+);
+
+app.use(
+  "/api/grades",
+  gradeRoutes
+);
+
+app.use(
+  "/api/classes",
+  classRoutes
+);
+
+app.use(
+  "/api/learners",
+  learnerRoutes
+);
+
+app.use(
+  "/api/parents",
+  parentRoutes
+);
 
 // ==========================================
-// 404 HANDLER
+// 404
 // ==========================================
 
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: `Route ${req.method} ${req.originalUrl} not found`
+    message:
+      `Route ${req.method} ${req.originalUrl} not found`
   });
 });
 
@@ -57,15 +103,20 @@ app.use((req, res) => {
 // ERROR HANDLER
 // ==========================================
 
-app.use((err, req, res, next) => {
-  console.error(err);
+app.use(
+  (err, req, res, next) => {
+    console.error(err);
 
-  const statusCode = err.statusCode || 500;
+    const statusCode =
+      err.statusCode || 500;
 
-  res.status(statusCode).json({
-    success: false,
-    message: err.message || "Internal server error"
-  });
-});
+    res.status(statusCode).json({
+      success: false,
+      message:
+        err.message ||
+        "Internal server error"
+    });
+  }
+);
 
 module.exports = app;
