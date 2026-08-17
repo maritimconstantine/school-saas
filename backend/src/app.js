@@ -1,9 +1,14 @@
 const express = require("express");
 const cors = require("cors");
 
+const authRoutes = require("./routes/authRoutes");
+
 const app = express();
 
-// Middleware
+// ==========================================
+// MIDDLEWARE
+// ==========================================
+
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:5173",
@@ -14,7 +19,10 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check
+// ==========================================
+// ROUTES
+// ==========================================
+
 app.get("/", (req, res) => {
   res.json({
     success: true,
@@ -23,7 +31,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// API health check
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,
@@ -32,7 +39,13 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// 404 handler
+// Authentication routes
+app.use("/api/auth", authRoutes);
+
+// ==========================================
+// 404 HANDLER
+// ==========================================
+
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -40,7 +53,10 @@ app.use((req, res) => {
   });
 });
 
-// Global error handler
+// ==========================================
+// ERROR HANDLER
+// ==========================================
+
 app.use((err, req, res, next) => {
   console.error(err);
 
