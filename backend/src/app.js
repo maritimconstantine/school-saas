@@ -7,6 +7,13 @@ const gradeRoutes = require("./routes/gradeRoutes");
 const classRoutes = require("./routes/classRoutes");
 const learnerRoutes = require("./routes/learnerRoutes");
 const parentRoutes = require("./routes/parentRoutes");
+const feeCategoryRoutes =require("./routes/feeCategoryRoutes");
+
+const feeStructureRoutes =require("./routes/feeStructureRoutes");
+
+const paymentRoutes =require("./routes/paymentRoutes");
+
+const receiptRoutes = require("./routes/receiptRoutes");
 
 const app = express();
 
@@ -29,6 +36,25 @@ app.use(
   express.urlencoded({
     extended: true
   })
+);
+app.use(
+  "/api/fee-categories",
+  feeCategoryRoutes
+);
+
+app.use(
+  "/api/fee-structures",
+  feeStructureRoutes
+);
+
+app.use(
+  "/api/payments",
+  paymentRoutes
+);
+
+app.use(
+  "/api/receipts",
+  receiptRoutes
 );
 
 // ==========================================
