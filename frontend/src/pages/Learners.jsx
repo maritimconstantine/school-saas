@@ -3,78 +3,68 @@ import { Link } from "react-router-dom";
 import api from "../api/api";
 
 const Learners = () => {
-
-  const [learners, setLearners] =
-    useState([]);
-
-  const [search, setSearch] =
-    useState("");
-
-  const [sortBy, setSortBy] =
-    useState("name");
-
-  const [order, setOrder] =
-    useState("asc");
-
-  const [loading, setLoading] =
-    useState(false);
+  const [learners, setLearners] = useState([]);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("name");
+  const [order, setOrder] = useState("asc");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const loadLearners = async () => {
-
-    setLoading(true);
-
     try {
+      setLoading(true);
+      setError("");
 
-      const response =
-        await api.get(
-          "/fee-reports/learners",
-          {
-            params: {
-              search,
-              sortBy,
-              order
-            }
+      const response = await api.get(
+        "/fee-reports/learners",
+        {
+          params: {
+            search,
+            sortBy,
+            order
           }
-        );
-
-      setLearners(
-        response.data.learners
+        }
       );
 
+      setLearners(
+        response.data.learners || []
+      );
     } catch (error) {
-
       console.error(error);
 
+      setError(
+        error.response?.data?.message ||
+        "Failed to load learners"
+      );
     } finally {
-
       setLoading(false);
     }
   };
 
   useEffect(() => {
-
     loadLearners();
-
   }, [search, sortBy, order]);
 
   return (
     <div>
-
       <div className="page-header">
-
         <h1>Learners</h1>
 
         <Link to="/learners/add">
           Add Learner
         </Link>
-
       </div>
 
-      <div className="filters">
+      {error && (
+        <div className="error">
+          {error}
+        </div>
+      )}
 
+      <div className="filters">
         <input
           type="text"
-          placeholder="Search learner..."
+          placeholder="Search by name or admission number..."
           value={search}
           onChange={(e) =>
             setSearch(e.target.value)
@@ -96,7 +86,7 @@ const Learners = () => {
           </option>
 
           <option value="balance">
-            Balance
+            Outstanding Balance
           </option>
 
           <option value="fees">
@@ -111,55 +101,42 @@ const Learners = () => {
           }
         >
           <option value="asc">
-            Ascending
+            Lowest / A-Z
           </option>
 
           <option value="desc">
-            Descending
+            Highest / Z-A
           </option>
         </select>
-
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p>Loading learners...</p>
       ) : (
-
         <table>
-
           <thead>
             <tr>
-
-              <th>
-                Admission No.
-              </th>
-
+              <th>Admission No.</th>
               <th>Learner</th>
-
               <th>Grade</th>
-
               <th>Class</th>
-
               <th>Total Fees</th>
-
               <th>Paid</th>
-
               <th>Balance</th>
-
               <th>Action</th>
-
             </tr>
           </thead>
 
           <tbody>
-
-            {learners.map(
-              (learner) => (
-
-                <tr
-                  key={learner.id}
-                >
-
+            {learners.length === 0 ? (
+              <tr>
+                <td colSpan="8">
+                  No learners found.
+                </td>
+              </tr>
+            ) : (
+              learners.map((learner) => (
+                <tr key={learner.id}>
                   <td>
                     {learner.admissionNumber}
                   </td>
@@ -204,18 +181,12 @@ const Learners = () => {
                       View
                     </Link>
                   </td>
-
                 </tr>
-
-              )
+              ))
             )}
-
           </tbody>
-
         </table>
-
       )}
-
     </div>
   );
 };
