@@ -14,6 +14,8 @@ const feeStructureRoutes =require("./routes/feeStructureRoutes");
 const paymentRoutes =require("./routes/paymentRoutes");
 
 const receiptRoutes = require("./routes/receiptRoutes");
+const feeReportRoutes = require("./routes/feeReportRoutes");
+const schoolRoutes =require("./routes/schoolRoutes");
 
 const app = express();
 
@@ -36,25 +38,6 @@ app.use(
   express.urlencoded({
     extended: true
   })
-);
-app.use(
-  "/api/fee-categories",
-  feeCategoryRoutes
-);
-
-app.use(
-  "/api/fee-structures",
-  feeStructureRoutes
-);
-
-app.use(
-  "/api/payments",
-  paymentRoutes
-);
-
-app.use(
-  "/api/receipts",
-  receiptRoutes
 );
 
 // ==========================================
@@ -87,6 +70,10 @@ app.use(
   "/api/auth",
   authRoutes
 );
+app.use(
+  "/api/schools",
+  schoolRoutes
+);
 
 app.use(
   "/api/academic-years",
@@ -111,6 +98,29 @@ app.use(
 app.use(
   "/api/parents",
   parentRoutes
+);
+app.use(
+  "/api/fee-categories",
+  feeCategoryRoutes
+);
+
+app.use(
+  "/api/fee-structures",
+  feeStructureRoutes
+);
+
+app.use(
+  "/api/payments",
+  paymentRoutes
+);
+
+app.use(
+  "/api/receipts",
+  receiptRoutes
+);
+app.use(
+  "/api/fee-reports",
+  feeReportRoutes
 );
 
 // ==========================================
